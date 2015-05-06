@@ -29,6 +29,19 @@ public TestRule issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("http
 
 You are free to change the url of your tracking system.
 
+### Usage
+
+Just add @BZ or @JIRA annotation on top of a test method or class.
+```java
+@BZ("1155593")
+@Test
+public void runVerifiedIssueTest() {
+
+@BZ({"1155593", "1203640"})
+@Test
+public void runMultipleVerifiedIssuesTest() {
+```
+
 ### Optional Configuration
 
 ikeeperConfiguration.properties:
@@ -51,6 +64,10 @@ os=RHEL6
 jdk=OpenJDK7
 db=PostgreSQL9.2
 ```
+  - Alternatively in the code:
+```java
+((IKeeperConnector) issueKeeper).setEnvironmentProperties(envProps);
+```
 
 ikeeperConstraints.properties
   - Set the constraints for the reported issues (e.g. the specific issue does not run on PostgreSQL9.2 but it does elsewhere)
@@ -60,17 +77,3 @@ ikeeperConstraints.properties
 1107757-os=RHEL6,Win2012
 1107757-jdk=OpenJDK7
 ```
-
-### Usage
-
-Just add @BZ or @JIRA annotation on top of a test method or class.
-```java
-@BZ("1155593")
-@Test
-public void runVerifiedIssueTest() {
-
-@BZ({"1155593", "1203640"})
-@Test
-public void runMultipleVerifiedIssuesTest() {
-```
-
