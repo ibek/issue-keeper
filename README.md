@@ -15,7 +15,7 @@ Issue keeper is a tracking tool which makes the tests skipped in advance when th
 Add the following Maven dependency into your pom.xml:
 ```java
 <dependency>
-    <groupId>qa.tools</groupId>
+    <groupId>link.bek.tools</groupId>
     <artifactId>issue-keeper-junit</artifactId>
     <version>4.11.0</version> <!-- corresponds to junit version 4.11 -->
 </dependency>
