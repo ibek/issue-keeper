@@ -9,7 +9,7 @@ import org.junit.Test;
 
 import qa.tools.ikeeper.annotation.BZ;
 
-public class BZConstraintsTest extends TestBase {
+public class BZConstraintsTest extends BZTestBase {
     
     private static final List<String> executed = new ArrayList<String>();
     

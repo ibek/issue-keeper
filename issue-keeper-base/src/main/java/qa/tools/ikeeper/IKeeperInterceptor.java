@@ -82,7 +82,12 @@ public class IKeeperInterceptor {
                 }
             }
         }
-        cfail = (cfail != null);
+        if (cfail == null) {
+            if (!action.canRunTest(details)) {
+                action.fail(testName, details);
+            }
+            return;
+        }
         
         String issueDescription = issueConstraints.get(details.getId() + "-" + "description");
         details.setDescription(issueDescription);

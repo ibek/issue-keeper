@@ -6,12 +6,12 @@ import org.junit.rules.TestRule;
 import qa.tools.ikeeper.client.BugzillaClient;
 import qa.tools.ikeeper.test.IKeeperJUnitConnector;
 
-public class TestBase {
+public class BZTestBase {
 
     @Rule
     public TestRule issueKeeper;
 
-    public TestBase() {
+    public BZTestBase() {
         issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
     }
     

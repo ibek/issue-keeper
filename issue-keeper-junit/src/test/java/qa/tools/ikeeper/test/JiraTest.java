@@ -7,9 +7,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import qa.tools.ikeeper.annotation.BZ;
+import qa.tools.ikeeper.annotation.Jira;
 
-public class BZTest extends BZTestBase {
+public class JiraTest extends JiraTestBase {
     
     private static final List<String> executed = new ArrayList<String>();
     
@@ -19,26 +19,26 @@ public class BZTest extends BZTestBase {
         Assertions.assertThat(executed).contains("runVerifiedIssueTest", "runMultipleVerifiedIssuesTest");
     }
 
-    @BZ("1155593")
+    @Jira("JBPM-4608")
     @Test
     public void runVerifiedIssueTest() {
         executed.add("runVerifiedIssueTest");
     }
 
-    @BZ({"1155593", "1203640"})
+    @Jira({"JBPM-4608", "JBPM-4607"})
     @Test
     public void runMultipleVerifiedIssuesTest() {
         executed.add("runMultipleVerifiedIssuesTest");
     }
 
-    @BZ("1217371")
+    @Jira("JBPM-4198")
     @Test
     public void ignoreNewIssueTest() {
         executed.add("ignoreNewIssueTest");
         System.out.println("ignoreNewIssueTest");
     }
 
-    @BZ({"1217371", "1203640"})
+    @Jira({"JBPM-4198", "JBPM-4608"})
     @Test
     public void ignoreNewAndVerifiedIssuesTest() {
         executed.add("ignoreNewAndVerifiedIssuesTest");

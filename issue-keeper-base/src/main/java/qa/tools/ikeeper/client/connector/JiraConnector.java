@@ -23,7 +23,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
 
     private static final Logger LOG = LoggerFactory.getLogger(JiraConnector.class);
 
-    private Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
+    private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
 
     private static final Map<Integer, IssueStatus> JIRA_STATES = new HashMap<Integer, IssueStatus>() {
         private static final long serialVersionUID = 1L;
@@ -31,7 +31,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
         {
             put(1, IssueStatus.ASSIGNED); // opened
             put(3, IssueStatus.MODIFIED); // in-progress
-            put(4, IssueStatus.MODIFIED); // re-opened
+            put(4, IssueStatus.ASSIGNED); // re-opened
             put(5, IssueStatus.ON_QA); // resolved
             put(6, IssueStatus.CLOSED); // closed
         }
