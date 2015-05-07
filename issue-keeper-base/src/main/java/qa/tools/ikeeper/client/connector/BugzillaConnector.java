@@ -7,17 +7,24 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.IssueStatus;
 
 public class BugzillaConnector implements IssueTrackingSystemConnector {
     
-    private Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
+    private static final Logger LOG = LoggerFactory.getLogger(BugzillaConnector.class);
+    
+    private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
     
     private String urlDomain;
+    private static boolean active = true;
     
     public BugzillaConnector(String urlDomain) {
         this.urlDomain = urlDomain;
@@ -66,6 +73,9 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
     }
 
     private String get(String url) {
+        if (!active) {
+            return null;
+        }
         String r = null;
         try {
             URL obj = new URL(url);
@@ -81,6 +91,11 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
             in.close();
 
             r = response.toString();
+        } catch (UnknownHostException ex) {
+            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage() + ", turning off - all tests will run";
+            LOG.warn(msg);
+            System.out.println(msg);
+            active = false;
         } catch (Exception ex) {
             ex.printStackTrace();
         }
