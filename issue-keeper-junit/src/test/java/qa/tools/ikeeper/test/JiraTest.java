@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 
 import qa.tools.ikeeper.annotation.Jira;
+import qa.tools.ikeeper.test.base.JiraTestBase;
 
 public class JiraTest extends JiraTestBase {
     

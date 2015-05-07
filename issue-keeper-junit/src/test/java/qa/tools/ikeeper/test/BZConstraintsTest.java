@@ -8,6 +8,7 @@ import org.junit.AfterClass;
 import org.junit.Test;
 
 import qa.tools.ikeeper.annotation.BZ;
+import qa.tools.ikeeper.test.base.BZTestBase;
 
 public class BZConstraintsTest extends BZTestBase {
     

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
     private static final Logger LOG = LoggerFactory.getLogger(JiraConnector.class);
 
     private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
+    private static boolean active = true;
 
     private static final Map<Integer, IssueStatus> JIRA_STATES = new HashMap<Integer, IssueStatus>() {
         private static final long serialVersionUID = 1L;
@@ -50,7 +52,10 @@ public class JiraConnector implements IssueTrackingSystemConnector {
         }
         IssueDetails details = new IssueDetails();
         details.setId(id);
+        
+        boolean setUnknownIssue = false;
 
+        try {
         String url = urlDomain + "/rest/api/2/issue/" + id;
         String response = get(url);
 
@@ -58,6 +63,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
         JsonObject jsonStatus = jsonFields.getAsJsonObject("status");
         int statusId = Integer.parseInt(jsonStatus.get("id").getAsString());
         String summary = jsonFields.get("summary").getAsString();
+        details.setTitle(summary);
 
         IssueStatus issueStatus = JIRA_STATES.get(statusId);
         if (issueStatus == null) {
@@ -66,14 +72,23 @@ public class JiraConnector implements IssueTrackingSystemConnector {
                 LOG.warn("Unknown Jira status id:" + statusId);
             }
         }
+        details.setStatus(issueStatus);
 
         Iterator<JsonElement> itelm = jsonFields.get("fixVersions").getAsJsonArray().iterator();
         String fixVersion = null;
         if (itelm.hasNext()) {
             fixVersion = itelm.next().getAsJsonObject().get("name").getAsString();
+            details.setTargetVersion(fixVersion);
         }
-
-        details = new IssueDetails(id, summary, issueStatus, fixVersion);
+        } catch (Exception ex) {
+            LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
+            setUnknownIssue = true;
+        }
+        
+        if (setUnknownIssue) {
+            details.setStatus(IssueStatus.UNKNOWN);
+            details.setTitle("Exception in getIssue details for BZ " + id);
+        }
 
         cache.put(id, details);
 
@@ -81,6 +96,9 @@ public class JiraConnector implements IssueTrackingSystemConnector {
     }
 
     private String get(String url) {
+        if (!active) {
+            return null;
+        }
         String r = null;
         BufferedReader in = null;
         try {
@@ -102,8 +120,12 @@ public class JiraConnector implements IssueTrackingSystemConnector {
             }
 
             r = response.toString();
+        } catch (UnknownHostException ex) {
+            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage() + ", turning off - all tests will run";
+            LOG.warn(msg);
+            System.out.println(msg);
+            active = false;
         } catch (Exception ex) {
-            LOG.error(ex.getMessage());
             ex.printStackTrace();
         } finally {
             try {

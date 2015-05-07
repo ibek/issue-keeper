@@ -1,4 +1,4 @@
-package qa.tools.ikeeper.test;
+package qa.tools.ikeeper.test.base;
 
 import org.junit.Rule;
 import org.junit.rules.TestRule;

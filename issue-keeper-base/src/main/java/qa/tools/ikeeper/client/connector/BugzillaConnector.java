@@ -22,9 +22,9 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
     private static final Logger LOG = LoggerFactory.getLogger(BugzillaConnector.class);
     
     private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
+    private static boolean active = true;
     
     private String urlDomain;
-    private static boolean active = true;
     
     public BugzillaConnector(String urlDomain) {
         this.urlDomain = urlDomain;
@@ -37,10 +37,17 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
         }
         IssueDetails details = new IssueDetails();
         details.setId(id);
+        
+        boolean setUnknownIssue = false;
 
         try {
             String url = urlDomain + "/jsonrpc.cgi?method=Bug.get&params=[{\"ids\":[" + id + "]}]";
             String bzjson = get(url);
+            
+            if (bzjson == null) {
+                setUnknownIssue = true;
+            } else {
+            
             JsonObject result = new JsonParser().parse(bzjson).getAsJsonObject().getAsJsonObject("result");
             JsonObject bug = result.getAsJsonArray("bugs").get(0).getAsJsonObject();
     
@@ -62,7 +69,13 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
             } else {
                 details.setStatus(IssueStatus.UNKNOWN);
             }
+            }
         } catch (Exception ex) {
+            LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
+            setUnknownIssue = true;
+        }
+        
+        if (setUnknownIssue) {
             details.setStatus(IssueStatus.UNKNOWN);
             details.setTitle("Exception in getIssue details for BZ " + id);
         }
