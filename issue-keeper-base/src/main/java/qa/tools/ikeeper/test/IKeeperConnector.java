@@ -26,9 +26,10 @@ public class IKeeperConnector {
 
     protected ITrackerClient[] clients;
     protected IKeeperInterceptor interceptor = new IKeeperInterceptor();
+    protected Map<String, String> environmentProperties = new HashMap<String, String>();
 
     protected static Map<String, String> configurationProperties = new HashMap<String, String>();
-    protected static Map<String, String> environmentProperties = new HashMap<String, String>();
+    protected static Map<String, String> permanentEnvironmentProperties = new HashMap<String, String>();
 
     protected static String testVersion;
     protected static List<String> versionsOrder = new ArrayList<String>();
@@ -47,6 +48,7 @@ public class IKeeperConnector {
     public IKeeperConnector(String testVersion, ITrackerClient... clients) {
         IKeeperConnector.testVersion = testVersion;
         this.clients = clients;
+        environmentProperties.putAll(permanentEnvironmentProperties);
     }
 
     private static void readConfigurationProperties() {
@@ -108,7 +110,7 @@ public class IKeeperConnector {
                 envProps.load(inputStream);
 
                 for (Entry<Object, Object> e : envProps.entrySet()) {
-                    environmentProperties.put((String) e.getKey(), (String) e.getValue());
+                    permanentEnvironmentProperties.put((String) e.getKey(), (String) e.getValue());
                 }
 
             } catch (IOException e) {
