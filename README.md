@@ -24,7 +24,7 @@ Add the following Maven dependency into your pom.xml:
 Add the following rule into your test class or the super test base, :
 ```java
 @Rule
-public TestRule issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
+public IKeeperJUnitConnector issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
 ```
 
 You are free to change the url of your tracking system.
@@ -66,7 +66,8 @@ db=PostgreSQL9.2
 ```
   - Alternatively in the code:
 ```java
-((IKeeperConnector) issueKeeper).setEnvironmentProperties(envProps);
+issueKeeper.setEnvironmentProperties(envProps);
+issueKeeper.setEnvironmentProperty("remoteAPI", controller.toString());
 ```
 
 ikeeperConstraints.properties

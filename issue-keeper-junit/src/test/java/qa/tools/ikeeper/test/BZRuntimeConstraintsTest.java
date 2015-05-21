@@ -32,7 +32,7 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
 
     public BZRuntimeConstraintsTest(RemoteAPI controller) {
         this.controller = controller;
-        ((IKeeperConnector) issueKeeper).setEnvironmentProperty("remoteAPI", controller.toString());
+        issueKeeper.setEnvironmentProperty("remoteAPI", controller.toString());
     }
 
     @AfterClass
