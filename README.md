@@ -1,4 +1,5 @@
 # Issue Keeper
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/link.bek.tools/issue-keeper-junit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/link.bek.tools/issue-keeper-junit)
 
 Issue keeper is a tracking tool which makes the tests skipped in advance when they are blocked by the open issues.
 
