@@ -52,42 +52,42 @@ public class JiraConnector implements IssueTrackingSystemConnector {
         }
         IssueDetails details = new IssueDetails();
         details.setId(id);
-        
+
         boolean setUnknownIssue = false;
 
         try {
-        String url = urlDomain + "/rest/api/2/issue/" + id;
-        String response = get(url);
+            String url = urlDomain + "/rest/api/2/issue/" + id + "?fields=summary,fixVersions,status";
+            String response = get(url);
 
-        JsonObject jsonFields = new JsonParser().parse(response).getAsJsonObject().getAsJsonObject("fields");
-        JsonObject jsonStatus = jsonFields.getAsJsonObject("status");
-        int statusId = Integer.parseInt(jsonStatus.get("id").getAsString());
-        String summary = jsonFields.get("summary").getAsString();
-        details.setTitle(summary);
+            JsonObject jsonFields = new JsonParser().parse(response).getAsJsonObject().getAsJsonObject("fields");
+            JsonObject jsonStatus = jsonFields.getAsJsonObject("status");
+            int statusId = Integer.parseInt(jsonStatus.get("id").getAsString());
+            String summary = jsonFields.get("summary").getAsString();
+            details.setTitle(summary);
 
-        IssueStatus issueStatus = JIRA_STATES.get(statusId);
-        if (issueStatus == null) {
-            issueStatus = IssueStatus.UNKNOWN;
-            if (LOG.isWarnEnabled()) {
-                LOG.warn("Unknown Jira status id:" + statusId);
+            IssueStatus issueStatus = JIRA_STATES.get(statusId);
+            if (issueStatus == null) {
+                issueStatus = IssueStatus.UNKNOWN;
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn("Unknown Jira status id:" + statusId);
+                }
             }
-        }
-        details.setStatus(issueStatus);
+            details.setStatus(issueStatus);
 
-        Iterator<JsonElement> itelm = jsonFields.get("fixVersions").getAsJsonArray().iterator();
-        String fixVersion = null;
-        if (itelm.hasNext()) {
-            fixVersion = itelm.next().getAsJsonObject().get("name").getAsString();
-            details.setTargetVersion(fixVersion);
-        }
+            Iterator<JsonElement> itelm = jsonFields.get("fixVersions").getAsJsonArray().iterator();
+            String fixVersion = null;
+            if (itelm.hasNext()) {
+                fixVersion = itelm.next().getAsJsonObject().get("name").getAsString();
+                details.setTargetVersion(fixVersion);
+            }
         } catch (Exception ex) {
             LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
             setUnknownIssue = true;
         }
-        
+
         if (setUnknownIssue) {
             details.setStatus(IssueStatus.UNKNOWN);
-            details.setTitle("Exception in getIssue details for BZ " + id);
+            details.setTitle("Exception in getIssue details for Jira " + id);
         }
 
         cache.put(id, details);
@@ -108,7 +108,8 @@ public class JiraConnector implements IssueTrackingSystemConnector {
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : " + conn.getResponseCode());
+                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : "
+                        + conn.getResponseCode());
             }
 
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -121,7 +122,8 @@ public class JiraConnector implements IssueTrackingSystemConnector {
 
             r = response.toString();
         } catch (UnknownHostException ex) {
-            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage() + ", turning off - all tests will run";
+            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage()
+                    + ", turning off - all tests will run";
             LOG.warn(msg);
             System.out.println(msg);
             active = false;
