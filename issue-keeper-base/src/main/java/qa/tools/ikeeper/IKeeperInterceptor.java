@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class IKeeperInterceptor {
             String constraintValue = issueConstraints.get(details.getId() + "-" + key);
             if (constraintValue != null) {
                 for (String cv : constraintValue.split(",")) {
-                    boolean newCfail = evaluationProperties.get(key).equals(cv);
+                    boolean newCfail = Objects.equals(evaluationProperties.get(key), cv);
                     cfail = (cfail == null) ? newCfail : (cfail && newCfail);
                 }
             }
