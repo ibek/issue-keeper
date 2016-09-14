@@ -109,8 +109,8 @@ public class IKeeperInterceptor {
                             intercept(testName, details, evaluationProperties, action);
                         }
                     }
+                    break;
                 }
-                break;
             }
         }
     }
