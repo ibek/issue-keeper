@@ -49,6 +49,7 @@ public class IKeeperConnector {
         IKeeperConnector.testVersion = testVersion;
         this.clients = clients;
         environmentProperties.putAll(permanentEnvironmentProperties);
+        interceptor.setEnabled(Boolean.valueOf(configurationProperties.getOrDefault("ikeeper.run", "true")));
     }
 
     private static void readConfigurationProperties() {
@@ -96,6 +97,13 @@ public class IKeeperConnector {
             } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
+        }
+        
+        // read additional system properties
+        
+        String ikeeperRun = System.getProperty("ikeeper.run");
+        if (ikeeperRun != null) {
+            configurationProperties.put("ikeeper.run", ikeeperRun);
         }
 
     }

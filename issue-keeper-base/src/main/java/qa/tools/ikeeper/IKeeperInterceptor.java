@@ -28,9 +28,35 @@ public class IKeeperInterceptor {
     static {
         loadIssueConstraints();
     }
+    
+    private boolean enabled = true;
 
     public IKeeperInterceptor() {
 
+    }
+
+    public void intercept(String testName, IAction action, List<Annotation> annotations, ITrackerClient[] clients,
+            Map<String, String> evaluationProperties) {
+        if (!enabled) {
+            return;
+        }
+        for (Annotation annotation : annotations) {
+            for (ITrackerClient c : clients) {
+                if (c.canHandle(annotation)) {
+                    List<IssueDetails> detailsList = c.getIssues(annotation);
+                    for (IssueDetails details : detailsList) {
+                        if (details != null) {
+                            intercept(testName, details, evaluationProperties, action);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+    }
+    
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     private static void loadIssueConstraints() {
@@ -95,23 +121,6 @@ public class IKeeperInterceptor {
 
         if (cfail && !action.canRunTest(details)) {
             action.fail(testName, details);
-        }
-    }
-
-    public void intercept(String testName, IAction action, List<Annotation> annotations, ITrackerClient[] clients,
-            Map<String, String> evaluationProperties) {
-        for (Annotation annotation : annotations) {
-            for (ITrackerClient c : clients) {
-                if (c.canHandle(annotation)) {
-                    List<IssueDetails> detailsList = c.getIssues(annotation);
-                    for (IssueDetails details : detailsList) {
-                        if (details != null) {
-                            intercept(testName, details, evaluationProperties, action);
-                        }
-                    }
-                    break;
-                }
-            }
         }
     }
 
