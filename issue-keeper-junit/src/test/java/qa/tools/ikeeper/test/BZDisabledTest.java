@@ -5,11 +5,16 @@ import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import qa.tools.ikeeper.annotation.BZ;
 import qa.tools.ikeeper.test.base.BZTestBase;
 
+@Ignore
+/**
+ * It is supposed to be run only as a single test.
+ */
 public class BZDisabledTest extends BZTestBase {
     
     private static final List<String> executed = new ArrayList<String>();

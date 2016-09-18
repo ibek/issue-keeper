@@ -107,6 +107,12 @@ public class IKeeperInterceptor {
                     boolean newCfail = Objects.equals(evaluationProperties.get(key), cv);
                     cfail = (cfail == null) ? newCfail : (cfail && newCfail);
                 }
+            } else {
+                String regexpConstraintValue = issueConstraints.get(details.getId() + "-" + key + "~");
+                if (regexpConstraintValue != null) {
+                    boolean newCfail = evaluationProperties.get(key).matches(regexpConstraintValue);
+                    cfail = (cfail == null) ? newCfail : (cfail && newCfail);
+                }
             }
         }
         if (cfail == null) {
