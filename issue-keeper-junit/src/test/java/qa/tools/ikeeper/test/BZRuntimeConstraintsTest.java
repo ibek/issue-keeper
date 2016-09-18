@@ -24,9 +24,9 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> remoteController() {
         List<Object[]> controllerList = new ArrayList<Object[]>();
-        controllerList.add(new Object[] { new RESTAPI() });
-        controllerList.add(new Object[] { new SOAPAPI() });
-        controllerList.add(new Object[] { new JMSAPI() });
+        controllerList.add(new Object[]{new RESTAPI()});
+        controllerList.add(new Object[]{new SOAPAPI()});
+        controllerList.add(new Object[]{new JMSAPI()});
         return controllerList;
     }
 
@@ -40,9 +40,7 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
         for (String ex : executed) {
             System.out.println("check:" + ex);
         }
-        Assertions.assertThat(executed).contains("runVerifiedRESTIssueTest-RESTAPI", "runVerifiedRESTIssueTest-SOAPAPI",
-                "runVerifiedRESTIssueTest-JMSAPI", "ignoreNewJMSIssueTest-RESTAPI", "ignoreNewJMSIssueTest-SOAPAPI",
-                "ignoreJMSNewAndVerifiedRESTIssuesTest-RESTAPI", "ignoreJMSNewAndVerifiedRESTIssuesTest-SOAPAPI");
+        Assertions.assertThat(executed).contains("runVerifiedRESTIssueTest-RESTAPI", "runVerifiedRESTIssueTest-SOAPAPI", "runVerifiedRESTIssueTest-JMSAPI", "ignoreNewJMSIssueTest-RESTAPI", "ignoreNewJMSIssueTest-SOAPAPI", "ignoreJMSNewAndVerifiedRESTIssuesTest-RESTAPI", "ignoreJMSNewAndVerifiedRESTIssuesTest-SOAPAPI");
     }
 
     @BZ("1145046")
@@ -59,7 +57,7 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
         executed.add("ignoreNewJMSIssueTest-" + controller);
     }
 
-    @BZ({ "1217371", "1145046" })
+    @BZ({"1217371", "1145046"})
     @Test
     public void ignoreJMSNewAndVerifiedRESTIssuesTest() {
         controller.newOrder();
@@ -67,10 +65,12 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
     }
 
     interface RemoteAPI {
+
         public void newOrder();
     }
 
     static class RESTAPI implements RemoteAPI {
+
         @Override
         public void newOrder() {
             System.out.println("Order through REST");
@@ -83,6 +83,7 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
     }
 
     static class SOAPAPI implements RemoteAPI {
+
         @Override
         public void newOrder() {
             System.out.println("Order through SOAP");
@@ -95,6 +96,7 @@ public class BZRuntimeConstraintsTest extends BZTestBase {
     }
 
     static class JMSAPI implements RemoteAPI {
+
         @Override
         public void newOrder() {
             System.out.println("Order through JMS");

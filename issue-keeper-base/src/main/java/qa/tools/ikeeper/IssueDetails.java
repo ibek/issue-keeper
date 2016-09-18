@@ -11,15 +11,16 @@ public class IssueDetails {
      */
     private String description;
 
-    public IssueDetails() {}
-    
+    public IssueDetails() {
+    }
+
     public IssueDetails(final String id, final String title, final IssueStatus status, final String targetVersion) {
         this.id = id;
         this.title = title;
         this.status = status;
         this.targetVersion = targetVersion;
     }
-    
+
     public String getId() {
         return id;
     }

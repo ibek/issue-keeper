@@ -28,15 +28,14 @@ public class IKeeperInterceptor {
     static {
         loadIssueConstraints();
     }
-    
+
     private boolean enabled = true;
 
     public IKeeperInterceptor() {
 
     }
 
-    public void intercept(String testName, IAction action, List<Annotation> annotations, ITrackerClient[] clients,
-            Map<String, String> evaluationProperties) {
+    public void intercept(String testName, IAction action, List<Annotation> annotations, ITrackerClient[] clients, Map<String, String> evaluationProperties) {
         if (!enabled) {
             return;
         }
@@ -54,7 +53,7 @@ public class IKeeperInterceptor {
             }
         }
     }
-    
+
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
@@ -81,8 +80,7 @@ public class IKeeperInterceptor {
     private void intercept(String testName, IssueDetails details, Map<String, String> evaluationProperties, IAction action) {
 
         List<String> versionsOrder = IKeeperConnector.getVersionsOrder();
-        if (!versionsOrder.isEmpty() && details.getTargetVersion() != null && !details.getTargetVersion().isEmpty()
-                && IKeeperConnector.getTestVersion() != null && !IKeeperConnector.getTestVersion().isEmpty()) {
+        if (!versionsOrder.isEmpty() && details.getTargetVersion() != null && !details.getTargetVersion().isEmpty() && IKeeperConnector.getTestVersion() != null && !IKeeperConnector.getTestVersion().isEmpty()) {
             int itargetVersion = versionsOrder.indexOf(details.getTargetVersion());
             int itestVersion = versionsOrder.indexOf(IKeeperConnector.getTestVersion());
             if (itestVersion < itargetVersion) {
@@ -121,7 +119,7 @@ public class IKeeperInterceptor {
             }
             return;
         }
-        
+
         String issueDescription = issueConstraints.get(details.getId() + "-" + "description");
         details.setDescription(issueDescription);
 

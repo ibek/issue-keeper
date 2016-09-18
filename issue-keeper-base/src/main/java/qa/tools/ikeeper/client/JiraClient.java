@@ -10,13 +10,13 @@ import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
 import qa.tools.ikeeper.client.connector.JiraConnector;
 
 public class JiraClient implements ITrackerClient {
-    
+
     private final IssueTrackingSystemConnector issueConnector;
 
     public JiraClient(String urlDomain) {
         issueConnector = new JiraConnector(urlDomain);
     }
-    
+
     @Override
     public boolean canHandle(Annotation annotation) {
         return annotation instanceof Jira;

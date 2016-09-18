@@ -17,10 +17,7 @@ public class MultipleClientsTest {
     private static final List<String> executed = new ArrayList<String>();
 
     @Rule
-    public IKeeperJUnitConnector issueKeeper = new IKeeperJUnitConnector(
-            new BugzillaClient("https://bugzilla.redhat.com"),
-            new JiraClient("https://issues.jboss.org")
-    );
+    public IKeeperJUnitConnector issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"), new JiraClient("https://issues.jboss.org"));
 
     @AfterClass
     public static void checkExecutions() {

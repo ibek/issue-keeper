@@ -16,23 +16,23 @@ import qa.tools.ikeeper.client.BugzillaClient;
 
 @BZ("1217371")
 public class BZBeforeClassTest {
-    
+
     @Rule
     @ClassRule
     public static IKeeperJUnitConnector issueKeeper;
-    
+
     static {
         issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
         // set environment properties
     }
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     @BeforeClass
     public static void failBeforeClass() {
         Assert.fail("All tests should be skipped, beforeClass method should not be called.");
     }
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).hasSize(0);
@@ -43,5 +43,5 @@ public class BZBeforeClassTest {
         executed.add("ignoreNewIssueTest");
         System.out.println("ignoreNewIssueTest");
     }
-    
+
 }

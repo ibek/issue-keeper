@@ -16,14 +16,14 @@ import qa.tools.ikeeper.test.base.BZTestBase;
  * It is supposed to be run only as a single test.
  */
 public class BZDisabledTest extends BZTestBase {
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     static {
         // -Dikeeper.run=false
         System.setProperty("ikeeper.run", "false");
     }
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).hasSize(4);
@@ -55,5 +55,5 @@ public class BZDisabledTest extends BZTestBase {
         executed.add("ignoreNewAndVerifiedIssuesTest");
         System.out.println("ignoreNewAndVerifiedIssuesTest");
     }
-    
+
 }

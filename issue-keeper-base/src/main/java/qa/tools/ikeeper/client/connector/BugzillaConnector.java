@@ -18,14 +18,14 @@ import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.IssueStatus;
 
 public class BugzillaConnector implements IssueTrackingSystemConnector {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(BugzillaConnector.class);
-    
+
     private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
     private static boolean active = true;
-    
+
     private String urlDomain;
-    
+
     public BugzillaConnector(String urlDomain) {
         this.urlDomain = urlDomain;
     }
@@ -37,51 +37,51 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
         }
         IssueDetails details = new IssueDetails();
         details.setId(id);
-        
+
         boolean setUnknownIssue = false;
 
         try {
             String url = urlDomain + "/jsonrpc.cgi?method=Bug.get&params=[{\"ids\":[" + id + "]}]";
             String bzjson = get(url);
-            
+
             if (bzjson == null) {
                 setUnknownIssue = true;
             } else {
-            
-            JsonObject result = new JsonParser().parse(bzjson).getAsJsonObject().getAsJsonObject("result");
-            JsonObject bug = result.getAsJsonArray("bugs").get(0).getAsJsonObject();
-    
-            details.setTitle(bug.get("summary").getAsString());
-            details.setTargetVersion(bug.get("target_release").getAsJsonArray().iterator().next().getAsString());
-            String status = bug.get("status").getAsString();
-            if (status.equals("CLOSED")) {           
-                details.setStatus(IssueStatus.CLOSED);
-            } else if (status.equals("VERIFIED")) {
-                details.setStatus(IssueStatus.VERIFIED);
-            } else if (status.equals("ON_QA")) {
-                details.setStatus(IssueStatus.ON_QA);
-            } else if (status.equals("MODIFIED")) {
-                details.setStatus(IssueStatus.MODIFIED);
-            } else if (status.equals("ASSIGNED")) {
-                details.setStatus(IssueStatus.ASSIGNED);
-            } else if (status.equals("NEW")) {
-                details.setStatus(IssueStatus.NEW);
-            } else {
-                details.setStatus(IssueStatus.UNKNOWN);
-            }
+
+                JsonObject result = new JsonParser().parse(bzjson).getAsJsonObject().getAsJsonObject("result");
+                JsonObject bug = result.getAsJsonArray("bugs").get(0).getAsJsonObject();
+
+                details.setTitle(bug.get("summary").getAsString());
+                details.setTargetVersion(bug.get("target_release").getAsJsonArray().iterator().next().getAsString());
+                String status = bug.get("status").getAsString();
+                if (status.equals("CLOSED")) {
+                    details.setStatus(IssueStatus.CLOSED);
+                } else if (status.equals("VERIFIED")) {
+                    details.setStatus(IssueStatus.VERIFIED);
+                } else if (status.equals("ON_QA")) {
+                    details.setStatus(IssueStatus.ON_QA);
+                } else if (status.equals("MODIFIED")) {
+                    details.setStatus(IssueStatus.MODIFIED);
+                } else if (status.equals("ASSIGNED")) {
+                    details.setStatus(IssueStatus.ASSIGNED);
+                } else if (status.equals("NEW")) {
+                    details.setStatus(IssueStatus.NEW);
+                } else {
+                    details.setStatus(IssueStatus.UNKNOWN);
+                }
             }
         } catch (Exception ex) {
             LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
             setUnknownIssue = true;
         }
-        
+
         if (setUnknownIssue) {
             details.setStatus(IssueStatus.UNKNOWN);
             details.setTitle("Exception in getIssue details for BZ " + id);
         }
-        
+
         cache.put(id, details);
-        
+
         return details;
     }
 

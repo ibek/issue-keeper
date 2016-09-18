@@ -11,9 +11,9 @@ import qa.tools.ikeeper.annotation.Jira;
 import qa.tools.ikeeper.test.base.JiraTestBase;
 
 public class JiraTest extends JiraTestBase {
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).hasSize(2);
@@ -45,5 +45,5 @@ public class JiraTest extends JiraTestBase {
         executed.add("ignoreNewAndVerifiedIssuesTest");
         System.out.println("ignoreNewAndVerifiedIssuesTest");
     }
-    
+
 }

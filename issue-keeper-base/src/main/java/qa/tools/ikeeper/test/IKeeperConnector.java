@@ -98,9 +98,9 @@ public class IKeeperConnector {
                 LOG.error(e.getMessage());
             }
         }
-        
+
         // read additional system properties
-        
+
         String ikeeperRun = System.getProperty("ikeeper.run");
         if (ikeeperRun != null) {
             configurationProperties.put("ikeeper.run", ikeeperRun);

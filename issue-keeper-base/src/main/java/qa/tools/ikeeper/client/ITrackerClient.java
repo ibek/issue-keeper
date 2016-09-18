@@ -6,9 +6,9 @@ import java.util.List;
 import qa.tools.ikeeper.IssueDetails;
 
 public interface ITrackerClient {
-    
+
     public boolean canHandle(Annotation annotation);
-    
+
     public List<IssueDetails> getIssues(Annotation annotation);
 
 }

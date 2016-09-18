@@ -28,6 +28,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
     private static boolean active = true;
 
     private static final Map<Integer, IssueStatus> JIRA_STATES = new HashMap<Integer, IssueStatus>() {
+
         private static final long serialVersionUID = 1L;
 
         {
@@ -108,8 +109,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : "
-                        + conn.getResponseCode());
+                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : " + conn.getResponseCode());
             }
 
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -122,8 +122,7 @@ public class JiraConnector implements IssueTrackingSystemConnector {
 
             r = response.toString();
         } catch (UnknownHostException ex) {
-            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage()
-                    + ", turning off - all tests will run";
+            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage() + ", turning off - all tests will run";
             LOG.warn(msg);
             System.out.println(msg);
             active = false;

@@ -1,74 +1,74 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>issue-keeper-junit</artifactId>
-    <version>4.12.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    
-    <name>Issue Keeper JUnit Connector</name>
-    <description>Issue keeper is a tracking tool which makes the tests skipped in advance when they are blocked by the open issues.</description>
+  <artifactId>issue-keeper-junit</artifactId>
+  <version>4.12.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Issue Keeper JUnit Connector</name>
+  <description>Issue keeper is a tracking tool which makes the tests skipped in advance when they are blocked by the open issues.</description>
+  <url>https://github.com/ibek/issue-keeper</url>
+
+  <parent>
+    <groupId>link.bek.tools</groupId>
+    <artifactId>issue-keeper-parent</artifactId>
+    <version>2.2.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git@github.com:ibek/issue-keeper.git</connection>
+    <developerConnection>scm:git:git@github.com:ibek/issue-keeper.git</developerConnection>
     <url>https://github.com/ibek/issue-keeper</url>
-    
-    <parent>
-        <groupId>link.bek.tools</groupId>
-        <artifactId>issue-keeper-parent</artifactId>
-        <version>2.2.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
-    
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    
-    <scm>
-        <connection>scm:git:git@github.com:ibek/issue-keeper.git</connection>
-        <developerConnection>scm:git:git@github.com:ibek/issue-keeper.git</developerConnection>
-        <url>https://github.com/ibek/issue-keeper</url>
-    </scm>
+  </scm>
 
-    <dependencies>
-        <dependency>
-            <groupId>link.bek.tools</groupId>
-            <artifactId>issue-keeper-base</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>1.6.0</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>link.bek.tools</groupId>
+      <artifactId>issue-keeper-base</artifactId>
+      <version>2.2.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>1.6.0</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    
-    <developers>
-        <developer>
-            <name>Ivo Bek</name>
-            <email>bekivo@gmail.com</email>
-        </developer>
-    </developers>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.2</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <developers>
+    <developer>
+      <name>Ivo Bek</name>
+      <email>bekivo@gmail.com</email>
+    </developer>
+  </developers>
 
 </project>

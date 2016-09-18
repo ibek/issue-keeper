@@ -14,16 +14,16 @@ import qa.tools.ikeeper.client.BugzillaClient;
 import qa.tools.ikeeper.test.IKeeperJUnitConnector;
 
 public class BZVersionTest {
-    
+
     @Rule
     public TestRule issueKeeper;
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     public BZVersionTest() {
         issueKeeper = new IKeeperJUnitConnector("6.0.2", new BugzillaClient("https://bugzilla.redhat.com"));
     }
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).hasSize(1);
@@ -42,5 +42,5 @@ public class BZVersionTest {
         executed.add("ignoreNewVerified61Test");
         System.out.println("ignoreNewVerified61Test");
     }
-    
+
 }

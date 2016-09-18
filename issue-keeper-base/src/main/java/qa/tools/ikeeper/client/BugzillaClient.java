@@ -10,13 +10,13 @@ import qa.tools.ikeeper.client.connector.BugzillaConnector;
 import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
 
 public class BugzillaClient implements ITrackerClient {
-    
+
     private final IssueTrackingSystemConnector issueConnector;
 
     public BugzillaClient(String urlDomain) {
         issueConnector = new BugzillaConnector(urlDomain);
     }
-    
+
     @Override
     public boolean canHandle(Annotation annotation) {
         return annotation instanceof BZ;

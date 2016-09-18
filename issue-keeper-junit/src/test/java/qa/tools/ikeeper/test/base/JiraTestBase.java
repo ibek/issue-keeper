@@ -14,5 +14,5 @@ public class JiraTestBase {
     public JiraTestBase() {
         issueKeeper = new IKeeperJUnitConnector(new JiraClient("https://issues.jboss.org"));
     }
-    
+
 }

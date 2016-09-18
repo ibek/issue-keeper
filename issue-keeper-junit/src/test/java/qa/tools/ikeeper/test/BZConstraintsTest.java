@@ -11,9 +11,9 @@ import qa.tools.ikeeper.annotation.BZ;
 import qa.tools.ikeeper.test.base.BZTestBase;
 
 public class BZConstraintsTest extends BZTestBase {
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).contains("runVerifiedIssueInEnvTest", "runMultipleVerifiedIssuesInEnvTest", "runNewIssueOutEnvTest");
@@ -50,5 +50,5 @@ public class BZConstraintsTest extends BZTestBase {
         executed.add("ignoreNewAndVerifiedIssuesInEnvTest");
         System.out.println("ignoreNewAndVerifiedIssuesInEnvTest");
     }
-    
+
 }

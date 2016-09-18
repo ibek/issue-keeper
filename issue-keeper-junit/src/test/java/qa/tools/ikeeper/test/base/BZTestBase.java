@@ -13,5 +13,5 @@ public class BZTestBase {
     public BZTestBase() {
         issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
     }
-    
+
 }

@@ -20,19 +20,20 @@ public class IKeeperJUnitConnector extends IKeeperConnector implements TestRule 
 
     public IKeeperJUnitConnector(String testVersion, ITrackerClient... clients) {
         super(testVersion, clients);
-        
+
         action = new Skip(); // skip is the default action
     }
 
     @Override
     public Statement apply(final Statement base, final Description description) {
         return new Statement() {
+
             @Override
             public void evaluate() throws Throwable {
                 List<Annotation> annotations = new ArrayList<Annotation>();
                 annotations.addAll(description.getAnnotations());
                 annotations.addAll(Arrays.asList(description.getTestClass().getAnnotations()));
-                
+
                 interceptor.intercept(description.getMethodName(), action, annotations, clients, environmentProperties);
 
                 base.evaluate();

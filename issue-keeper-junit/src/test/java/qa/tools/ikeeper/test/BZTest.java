@@ -11,9 +11,9 @@ import qa.tools.ikeeper.annotation.BZ;
 import qa.tools.ikeeper.test.base.BZTestBase;
 
 public class BZTest extends BZTestBase {
-    
+
     private static final List<String> executed = new ArrayList<String>();
-    
+
     @AfterClass
     public static void checkExecutions() {
         Assertions.assertThat(executed).hasSize(2);
@@ -45,5 +45,5 @@ public class BZTest extends BZTestBase {
         executed.add("ignoreNewAndVerifiedIssuesTest");
         System.out.println("ignoreNewAndVerifiedIssuesTest");
     }
-    
+
 }

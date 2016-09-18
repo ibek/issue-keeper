@@ -8,8 +8,7 @@ public class Fail implements IAction {
 
     @Override
     public boolean canRunTest(IssueDetails details) {
-        return (details.getStatus() == IssueStatus.CLOSED || details.getStatus() == IssueStatus.ON_QA || details
-                .getStatus() == IssueStatus.VERIFIED || details.getStatus() == IssueStatus.UNKNOWN);
+        return (details.getStatus() == IssueStatus.CLOSED || details.getStatus() == IssueStatus.ON_QA || details.getStatus() == IssueStatus.VERIFIED || details.getStatus() == IssueStatus.UNKNOWN);
     }
 
     @Override

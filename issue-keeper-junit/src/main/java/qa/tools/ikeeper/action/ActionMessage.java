@@ -6,8 +6,7 @@ class ActionMessage {
 
     public static String generate(String testName, IssueDetails details, String result) {
         String description = details.getDescription();
-        String msg = testName + " - this test " + result + " due to:\n\t" + formatId(details.getId()) + " "
-                + details.getTitle() + "\n\tstatus: " + details.getStatus() + formatDescription(description);
+        String msg = testName + " - this test " + result + " due to:\n\t" + formatId(details.getId()) + " " + details.getTitle() + "\n\tstatus: " + details.getStatus() + formatDescription(description);
         return msg;
     }
 
