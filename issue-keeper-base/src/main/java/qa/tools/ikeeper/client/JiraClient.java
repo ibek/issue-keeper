@@ -11,7 +11,7 @@ import qa.tools.ikeeper.client.connector.JiraConnector;
 
 public class JiraClient implements ITrackerClient {
 
-    private final IssueTrackingSystemConnector issueConnector;
+    protected final IssueTrackingSystemConnector issueConnector;
 
     public JiraClient(String urlDomain) {
         issueConnector = new JiraConnector(urlDomain);
@@ -34,6 +34,11 @@ public class JiraClient implements ITrackerClient {
         }
 
         return detailsList;
+    }
+
+    @Override
+    public IssueTrackingSystemConnector getIssueConnector() {
+        return issueConnector;
     }
 
 }

@@ -35,4 +35,9 @@ public class BugzillaClient implements ITrackerClient {
 
         return detailsList;
     }
+
+    @Override
+    public IssueTrackingSystemConnector getIssueConnector() {
+        return issueConnector;
+    }
 }
