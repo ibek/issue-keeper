@@ -10,6 +10,7 @@ Issue keeper is a tracking tool which makes the tests skipped in advance when th
   - Skipping whole test classes
   - Design and runtime configurations
   - Integration with test frameworks - **JUnit**
+  - Offline mode (cache for 24 hours - customizable)
 
 ### Configuration
 
@@ -18,7 +19,7 @@ Add the following Maven dependency into your pom.xml:
 <dependency>
     <groupId>link.bek.tools</groupId>
     <artifactId>issue-keeper-junit</artifactId>
-    <version>4.12.0</version> <!-- corresponds to junit version 4.12 -->
+    <version>4.12.1</version> <!-- corresponds to junit version 4.12 -->
     <!--<version>4.11.2</version> corresponds to junit version 4.11 -->
 </dependency>
 ```
@@ -57,6 +58,9 @@ ikeeperConfiguration.properties:
    - testVersion=6.0.2
   - Set versions order
    - versions=6.0.1,6.0.2,6.0.3,6.1.0
+  - Disable Issue Keeper
+   - ikeeper.run=false
+   - can be also configured as a system property -Dikeeper.run=false
 
 ikeeperEnvironment.properties
   - Set the running environment properties for comparison with the issue constraints
@@ -79,4 +83,8 @@ ikeeperConstraints.properties
 1107757-description=Test description of the issue 1107757.
 1107757-os=RHEL6,Win2012
 1107757-jdk=OpenJDK7
+```
+  - Support for regular expressions using tilde:
+```sh
+JBPM-3558-db~=Postgre.*
 ```
