@@ -11,6 +11,7 @@ Issue keeper is a tracking tool which makes the tests skipped in advance when th
   - Design and runtime configurations
   - Integration with test frameworks - **JUnit**
   - Offline mode (cache for 24 hours - customizable)
+  - Configurable issue tracking system states in projects (according to the unique workflows)
 
 ### Configuration
 
@@ -61,6 +62,10 @@ ikeeperConfiguration.properties:
   - Disable Issue Keeper
    - ikeeper.run=false
    - can be also configured as a system property -Dikeeper.run=false
+  - Configure action states
+   - JIRA@DEFAULT=NEW,OPEN,ASSIGNED,CODING IN PROGRESS,PULL REQUEST SENT,REOPENED
+   - BZ@DEFAULT=NEW,ASSIGNED,POST,MODIFIED
+   - JIRA@RHBPMS=NEW,OPEN,ASSIGNED,CODING IN PROGRESS,PULL REQUEST SENT,REOPENED,RESOLVED
 
 ikeeperEnvironment.properties
   - Set the running environment properties for comparison with the issue constraints
