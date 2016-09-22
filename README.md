@@ -20,7 +20,7 @@ Add the following Maven dependency into your pom.xml:
 <dependency>
     <groupId>link.bek.tools</groupId>
     <artifactId>issue-keeper-junit</artifactId>
-    <version>4.12.1</version> <!-- corresponds to junit version 4.12 -->
+    <version>4.12.2</version> <!-- corresponds to junit version 4.12 -->
     <!--<version>4.11.2</version> corresponds to junit version 4.11 -->
 </dependency>
 ```
