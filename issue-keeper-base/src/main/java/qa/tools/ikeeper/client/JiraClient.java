@@ -2,6 +2,7 @@ package qa.tools.ikeeper.client;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import qa.tools.ikeeper.IssueDetails;
@@ -15,6 +16,16 @@ public class JiraClient implements ITrackerClient {
 
     public JiraClient(String urlDomain) {
         issueConnector = new JiraConnector(urlDomain);
+    }
+    
+    @Override
+    public String getName() {
+        return "JIRA";
+    }
+    
+    @Override
+    public List<String> getDefaultActionStates() {
+        return Arrays.asList("NEW", "OPEN", "ASSIGNED", "CODING IN PROGRESS", "PULL REQUEST SENT", "REOPENED");
     }
 
     @Override

@@ -6,19 +6,20 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import qa.tools.ikeeper.IssueDetails;
-import qa.tools.ikeeper.IssueStatus;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import qa.tools.ikeeper.IssueDetails;
 
 public class JiraConnector implements IssueTrackingSystemConnector {
 
@@ -27,18 +28,13 @@ public class JiraConnector implements IssueTrackingSystemConnector {
     private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
     private static boolean active = true;
 
-    private static final Map<Integer, IssueStatus> JIRA_STATES = new HashMap<Integer, IssueStatus>() {
-
-        private static final long serialVersionUID = 1L;
-
-        {
-            put(1, IssueStatus.ASSIGNED); // opened
-            put(3, IssueStatus.MODIFIED); // in-progress
-            put(4, IssueStatus.ASSIGNED); // re-opened
-            put(5, IssueStatus.ON_QA); // resolved
-            put(6, IssueStatus.CLOSED); // closed
-        }
-    };
+    public static List<Integer> ACTION_STATES = Arrays.asList( // DEFAULT
+                                                                      // behavior
+            1, // opened
+            2, // new
+            3, // in-progress
+            4 // re-opened
+    );
 
     private String urlDomain;
 
@@ -54,26 +50,18 @@ public class JiraConnector implements IssueTrackingSystemConnector {
         IssueDetails details = new IssueDetails();
         details.setId(id);
 
-        boolean setUnknownIssue = false;
-
         try {
-            String url = urlDomain + "/rest/api/2/issue/" + id + "?fields=summary,fixVersions,status";
+            String url = urlDomain + "/rest/api/2/issue/" + id + "?fields=summary,fixVersions,status,project";
             String response = get(url);
 
             JsonObject jsonFields = new JsonParser().parse(response).getAsJsonObject().getAsJsonObject("fields");
             JsonObject jsonStatus = jsonFields.getAsJsonObject("status");
-            int statusId = Integer.parseInt(jsonStatus.get("id").getAsString());
+            String statusName = jsonStatus.get("name").getAsString();
             String summary = jsonFields.get("summary").getAsString();
             details.setTitle(summary);
-
-            IssueStatus issueStatus = JIRA_STATES.get(statusId);
-            if (issueStatus == null) {
-                issueStatus = IssueStatus.UNKNOWN;
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn("Unknown Jira status id:" + statusId);
-                }
-            }
-            details.setStatus(issueStatus);
+            details.setStatusName(statusName.toUpperCase());
+            JsonObject project = jsonFields.getAsJsonObject("project");
+            details.setProject("JIRA@" + project.get("key").getAsString());
 
             Iterator<JsonElement> itelm = jsonFields.get("fixVersions").getAsJsonArray().iterator();
             String fixVersion = null;
@@ -81,17 +69,11 @@ public class JiraConnector implements IssueTrackingSystemConnector {
                 fixVersion = itelm.next().getAsJsonObject().get("name").getAsString();
                 details.setTargetVersion(fixVersion);
             }
+
+            cache.put(id, details);
         } catch (Exception ex) {
             LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
-            setUnknownIssue = true;
         }
-
-        if (setUnknownIssue) {
-            details.setStatus(IssueStatus.UNKNOWN);
-            details.setTitle("Exception in getIssue details for Jira " + id);
-        }
-
-        cache.put(id, details);
 
         return details;
     }
@@ -109,7 +91,8 @@ public class JiraConnector implements IssueTrackingSystemConnector {
             conn.setRequestProperty("Accept", "application/json");
 
             if (conn.getResponseCode() != 200) {
-                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : " + conn.getResponseCode());
+                throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : " + conn
+                        .getResponseCode());
             }
 
             in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
@@ -122,7 +105,8 @@ public class JiraConnector implements IssueTrackingSystemConnector {
 
             r = response.toString();
         } catch (UnknownHostException ex) {
-            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage() + ", turning off - all tests will run";
+            String msg = "Issue Keeper - UnknownHostException: " + ex.getMessage()
+                    + ", turning off - all tests will run";
             LOG.warn(msg);
             System.out.println(msg);
             active = false;

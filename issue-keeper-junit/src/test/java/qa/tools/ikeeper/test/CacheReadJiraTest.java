@@ -34,8 +34,8 @@ public class CacheReadJiraTest {
     public static void prepareCache() {
         try {
             PrintWriter out = new PrintWriter(CacheConnector.DEFAULT_CACHE_FILE_PATH);
-            // all JIRAs are ASSIGNED in the cache
-            out.println("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,jBPM 6.4.0.Beta1,ASSIGNED\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),jBPM 6.4.0.Beta1,ASSIGNED\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,null,ASSIGNED");
+            // all JIRAs are OPEN in the cache
+            out.println("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -38,7 +38,8 @@ public class CacheCreateJiraTest {
         Assertions.assertThat(cache).exists();
         try {
             String cacheData = new String(Files.readAllBytes(Paths.get(CacheConnector.DEFAULT_CACHE_FILE_PATH)));
-            Assertions.assertThat(cacheData).contains("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,jBPM 6.4.0.Beta1,ON_QA\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),jBPM 6.4.0.Beta1,ON_QA\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,null,ASSIGNED");
+            System.out.println(cacheData);
+            Assertions.assertThat(cacheData).contains("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail();

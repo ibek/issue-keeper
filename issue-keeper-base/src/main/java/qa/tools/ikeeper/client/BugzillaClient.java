@@ -2,6 +2,7 @@ package qa.tools.ikeeper.client;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import qa.tools.ikeeper.IssueDetails;
@@ -11,10 +12,20 @@ import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
 
 public class BugzillaClient implements ITrackerClient {
 
-    private final IssueTrackingSystemConnector issueConnector;
+    private final BugzillaConnector issueConnector;
 
     public BugzillaClient(String urlDomain) {
         issueConnector = new BugzillaConnector(urlDomain);
+    }
+    
+    @Override
+    public String getName() {
+        return "BZ";
+    }
+    
+    @Override
+    public List<String> getDefaultActionStates() {
+        return Arrays.asList("NEW", "ASSIGNED", "POST", "MODIFIED");
     }
 
     @Override

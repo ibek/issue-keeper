@@ -7,6 +7,10 @@ import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
 
 public interface ITrackerClient {
+    
+    public String getName();
+    
+    public List<String> getDefaultActionStates();
 
     public boolean canHandle(Annotation annotation);
 

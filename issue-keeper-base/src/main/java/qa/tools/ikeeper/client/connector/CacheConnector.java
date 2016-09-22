@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import qa.tools.ikeeper.IssueDetails;
-import qa.tools.ikeeper.IssueStatus;
 
 public class CacheConnector implements IssueTrackingSystemConnector {
 
@@ -46,21 +45,19 @@ public class CacheConnector implements IssueTrackingSystemConnector {
 
         String[] iparts = idetails.split(",");
         details.setTitle(iparts[0]);
-        String targetVersion = iparts[1];
+        details.setProject(iparts[1]);
+        String targetVersion = iparts[2];
         if (!targetVersion.equals("null")) {
             details.setTargetVersion(targetVersion);
         }
-        String status = iparts[2];
-        if (!status.equals("null")) {
-            details.setStatus(IssueStatus.valueOf(status));
-        }
+        String status = iparts[3];
+        details.setStatusName(status);
 
         return details;
     }
 
     public void addIssueDetails(IssueDetails details) {
-        String status = (details.getStatus() != null) ? details.getStatus().name() : "null";
-        data.setProperty(details.getId(), details.getTitle() + "," + details.getTargetVersion() + "," + status);
+        data.setProperty(details.getId(), details.getTitle() + "," + details.getProject() + "," + details.getTargetVersion() + "," + details.getStatusName());
     }
 
     public void saveData() {

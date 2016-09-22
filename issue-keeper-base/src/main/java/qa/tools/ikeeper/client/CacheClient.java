@@ -31,6 +31,21 @@ public class CacheClient implements ITrackerClient {
             }
         }
     }
+    
+    public List<ITrackerClient> getClients() {
+        return clients;
+    }
+    
+    @Override
+    public String getName() {
+        return "CACHE";
+    }
+    
+    @Override
+    public List<String> getDefaultActionStates() {
+        List<String> actionStates = new ArrayList<String>();
+        return actionStates;
+    }
 
     @Override
     public boolean canHandle(Annotation annotation) {

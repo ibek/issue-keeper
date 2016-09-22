@@ -1,8 +1,5 @@
 package qa.tools.ikeeper.client.connector;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -14,8 +11,10 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 import qa.tools.ikeeper.IssueDetails;
-import qa.tools.ikeeper.IssueStatus;
 
 public class BugzillaConnector implements IssueTrackingSystemConnector {
 
@@ -53,22 +52,9 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
 
                 details.setTitle(bug.get("summary").getAsString());
                 details.setTargetVersion(bug.get("target_release").getAsJsonArray().iterator().next().getAsString());
+                details.setProject("BZ@" + bug.get("product").getAsString());
                 String status = bug.get("status").getAsString();
-                if (status.equals("CLOSED")) {
-                    details.setStatus(IssueStatus.CLOSED);
-                } else if (status.equals("VERIFIED")) {
-                    details.setStatus(IssueStatus.VERIFIED);
-                } else if (status.equals("ON_QA")) {
-                    details.setStatus(IssueStatus.ON_QA);
-                } else if (status.equals("MODIFIED")) {
-                    details.setStatus(IssueStatus.MODIFIED);
-                } else if (status.equals("ASSIGNED")) {
-                    details.setStatus(IssueStatus.ASSIGNED);
-                } else if (status.equals("NEW")) {
-                    details.setStatus(IssueStatus.NEW);
-                } else {
-                    details.setStatus(IssueStatus.UNKNOWN);
-                }
+                details.setStatusName(status.toUpperCase());
             }
         } catch (Exception ex) {
             LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
@@ -76,7 +62,7 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
         }
 
         if (setUnknownIssue) {
-            details.setStatus(IssueStatus.UNKNOWN);
+            details.setStatusName("UNKNOWN");
             details.setTitle("Exception in getIssue details for BZ " + id);
         }
 

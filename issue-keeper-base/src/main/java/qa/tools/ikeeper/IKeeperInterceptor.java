@@ -29,10 +29,11 @@ public class IKeeperInterceptor {
         loadIssueConstraints();
     }
 
+    private Map<String, List<String>> projectStates;
     private boolean enabled = true;
 
-    public IKeeperInterceptor() {
-
+    public IKeeperInterceptor(Map<String, List<String>> projectStates) {
+        this.projectStates = projectStates;
     }
 
     public void intercept(String testName, IAction action, List<Annotation> annotations, ITrackerClient[] clients, Map<String, String> evaluationProperties) {
@@ -85,14 +86,15 @@ public class IKeeperInterceptor {
             int itestVersion = versionsOrder.indexOf(IKeeperConnector.getTestVersion());
             if (itestVersion < itargetVersion) {
                 // the issue is not fixed in the current testing version
-                action.fail(testName, details);
+                action.perform(testName, details);
                 return;
             }
         }
 
         if (evaluationProperties.isEmpty()) {
-            if (!action.canRunTest(details)) {
-                action.fail(testName, details);
+            List<String> istates = getIssueProjectStates(details);
+            if (istates.contains(details.getStatusName())) {
+                action.perform(testName, details);
             }
             return; // we do not need to check any issue constraints
         }
@@ -114,8 +116,9 @@ public class IKeeperInterceptor {
             }
         }
         if (cfail == null) {
-            if (!action.canRunTest(details)) {
-                action.fail(testName, details);
+            List<String> istates = getIssueProjectStates(details);
+            if (istates.contains(details.getStatusName())) {
+                action.perform(testName, details);
             }
             return;
         }
@@ -123,9 +126,19 @@ public class IKeeperInterceptor {
         String issueDescription = issueConstraints.get(details.getId() + "-" + "description");
         details.setDescription(issueDescription);
 
-        if (cfail && !action.canRunTest(details)) {
-            action.fail(testName, details);
+        List<String> istates = getIssueProjectStates(details);
+        if (cfail && istates.contains(details.getStatusName())) {
+            action.perform(testName, details);
         }
+    }
+    
+    private List<String> getIssueProjectStates(IssueDetails details) {
+        List<String> istates = projectStates.get(details.getProject());
+        if (istates == null) {
+            String issueType = details.getProject().substring(0, details.getProject().indexOf("@"));
+            istates = projectStates.get(issueType + "@DEFAULT");
+        }
+        return istates;
     }
 
 }

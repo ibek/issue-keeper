@@ -3,6 +3,7 @@ package qa.tools.ikeeper.test;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import qa.tools.ikeeper.IKeeperInterceptor;
 import qa.tools.ikeeper.action.DoNothing;
 import qa.tools.ikeeper.action.IAction;
+import qa.tools.ikeeper.client.CacheClient;
 import qa.tools.ikeeper.client.ITrackerClient;
 
 public class IKeeperConnector {
@@ -25,11 +27,12 @@ public class IKeeperConnector {
     protected static final String envPropFileName = "ikeeperEnvironment.properties";
 
     protected ITrackerClient[] clients;
-    protected IKeeperInterceptor interceptor = new IKeeperInterceptor();
+    protected IKeeperInterceptor interceptor;
     protected Map<String, String> environmentProperties = new HashMap<String, String>();
 
     protected static Map<String, String> configurationProperties = new HashMap<String, String>();
     protected static Map<String, String> permanentEnvironmentProperties = new HashMap<String, String>();
+    protected static Map<String, List<String>> projectStates = new HashMap<String, List<String>>();
 
     protected static String testVersion;
     protected static List<String> versionsOrder = new ArrayList<String>();
@@ -49,7 +52,29 @@ public class IKeeperConnector {
         IKeeperConnector.testVersion = testVersion;
         this.clients = clients;
         environmentProperties.putAll(permanentEnvironmentProperties);
-        interceptor.setEnabled(Boolean.valueOf(configurationProperties.getOrDefault("ikeeper.run", "true")));
+        String ikeeperRun = configurationProperties.get("ikeeper.run");
+        if (ikeeperRun == null) {
+            ikeeperRun = "true";
+        }
+        
+        // load default project states
+        List<ITrackerClient> fclients = new ArrayList<ITrackerClient>();
+        for (ITrackerClient client : clients) {
+            if (client instanceof CacheClient) {
+                CacheClient cclient = (CacheClient) client;
+                fclients.addAll(cclient.getClients());
+            } else {
+                fclients.add(client);
+            }
+        }
+        for (ITrackerClient client : fclients) {
+            if (!projectStates.containsKey(client.getName() + "@DEFAULT")) {
+                projectStates.put(client.getName() + "@DEFAULT", client.getDefaultActionStates());
+            }
+        }
+        
+        interceptor = new IKeeperInterceptor(projectStates);
+        interceptor.setEnabled(Boolean.valueOf(ikeeperRun));
     }
 
     private static void readConfigurationProperties() {
@@ -91,6 +116,14 @@ public class IKeeperConnector {
                 if (versions != null && !versions.isEmpty()) {
                     for (String v : versions.split(",")) {
                         versionsOrder.add(v);
+                    }
+                }
+                
+                for (Object ko : confProps.keySet()) {
+                    String key = (String) ko;
+                    if (key.contains("@")) {
+                        List<String> states = Arrays.asList(((String)confProps.get(key)).toUpperCase().split(","));
+                        projectStates.put(key, states);
                     }
                 }
 

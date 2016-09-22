@@ -38,7 +38,7 @@ public class BZConstraintsTest extends BZTestBase {
         System.out.println("ignoreNewIssueInEnvTest");
     }
 
-    @BZ("844278")
+    @BZ("1295529")
     @Test
     public void runNewIssueOutEnvTest() {
         executed.add("runNewIssueOutEnvTest");
