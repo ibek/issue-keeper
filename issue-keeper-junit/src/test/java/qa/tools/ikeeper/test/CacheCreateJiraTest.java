@@ -2,10 +2,9 @@ package qa.tools.ikeeper.test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
@@ -37,7 +36,7 @@ public class CacheCreateJiraTest {
         File cache = new File(CacheConnector.DEFAULT_CACHE_FILE_PATH);
         Assertions.assertThat(cache).exists();
         try {
-            String cacheData = new String(Files.readAllBytes(Paths.get(CacheConnector.DEFAULT_CACHE_FILE_PATH)));
+            String cacheData = new Scanner(new File(CacheConnector.DEFAULT_CACHE_FILE_PATH)).useDelimiter("\\Z").next();
             System.out.println(cacheData);
             Assertions.assertThat(cacheData).contains("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
         } catch (IOException e) {
