@@ -49,7 +49,9 @@ public class IKeeperConnector {
     }
 
     public IKeeperConnector(String testVersion, ITrackerClient... clients) {
-        IKeeperConnector.testVersion = testVersion;
+        if (testVersion != null) {
+            IKeeperConnector.testVersion = testVersion;
+        }
         this.clients = clients;
         environmentProperties.putAll(permanentEnvironmentProperties);
         String ikeeperRun = configurationProperties.get("ikeeper.run");
