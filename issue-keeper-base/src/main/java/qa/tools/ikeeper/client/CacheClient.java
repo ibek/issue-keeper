@@ -1,14 +1,15 @@
 package qa.tools.ikeeper.client;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-
 import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.annotation.BZ;
 import qa.tools.ikeeper.annotation.Jira;
 import qa.tools.ikeeper.client.connector.CacheConnector;
 import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class CacheClient implements ITrackerClient {
 
@@ -31,16 +32,16 @@ public class CacheClient implements ITrackerClient {
             }
         }
     }
-    
+
     public List<ITrackerClient> getClients() {
         return clients;
     }
-    
+
     @Override
     public String getName() {
         return "CACHE";
     }
-    
+
     @Override
     public List<String> getDefaultActionStates() {
         List<String> actionStates = new ArrayList<String>();
@@ -61,31 +62,37 @@ public class CacheClient implements ITrackerClient {
         boolean cacheChanged = false;
 
         for (String id : ids) {
-            IssueDetails details = issueConnector.getIssue(id);
-            if (details == null) {
-                for (ITrackerClient client : clients) {
-                    if (client.canHandle(annotation)) {
+
+            for (ITrackerClient client : clients) {
+                Set<IssueDetails> details = null;
+                if (client.canHandle(annotation)) {
+                    issueConnector.setQuery(client.getQuery());
+                    details = issueConnector.getIssue(id);
+                    if (details == null) {
                         details = client.getIssueConnector().getIssue(id);
                         if (details != null) {
-                            issueConnector.addIssueDetails(details);
+                            issueConnector.addIssueDetails(id, client.getQuery(), details);
                             cacheChanged = true;
                         }
                     }
                 }
+                detailsList.addAll(details);
             }
-            detailsList.add(details);
-        }
 
-        if (cacheChanged) {
-            issueConnector.saveData();
+            if (cacheChanged) {
+                issueConnector.saveData();
+            }
         }
-
         return detailsList;
+    }
+
+    @Override
+    public String getQuery() {
+        return issueConnector.getQuery();
     }
 
     @Override
     public IssueTrackingSystemConnector getIssueConnector() {
         return issueConnector;
     }
-
 }

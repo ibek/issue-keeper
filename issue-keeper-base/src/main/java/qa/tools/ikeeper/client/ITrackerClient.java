@@ -16,6 +16,8 @@ public interface ITrackerClient {
 
     public List<IssueDetails> getIssues(Annotation annotation);
 
+    public String getQuery();
+
     public IssueTrackingSystemConnector getIssueConnector();
 
 }

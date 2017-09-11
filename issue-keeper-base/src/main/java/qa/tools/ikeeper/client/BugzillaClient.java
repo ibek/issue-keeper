@@ -1,14 +1,15 @@
 package qa.tools.ikeeper.client;
 
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.annotation.BZ;
 import qa.tools.ikeeper.client.connector.BugzillaConnector;
 import qa.tools.ikeeper.client.connector.IssueTrackingSystemConnector;
+
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class BugzillaClient implements ITrackerClient {
 
@@ -17,12 +18,16 @@ public class BugzillaClient implements ITrackerClient {
     public BugzillaClient(String urlDomain) {
         issueConnector = new BugzillaConnector(urlDomain);
     }
-    
+
+    public BugzillaClient(String urlDomain, String query) {
+        issueConnector = new BugzillaConnector(urlDomain, query);
+    }
+
     @Override
     public String getName() {
         return "BZ";
     }
-    
+
     @Override
     public List<String> getDefaultActionStates() {
         return Arrays.asList("NEW", "ASSIGNED", "POST", "MODIFIED");
@@ -40,11 +45,16 @@ public class BugzillaClient implements ITrackerClient {
         String[] ids = bz.value();
         List<IssueDetails> detailsList = new ArrayList<IssueDetails>();
         for (String id : ids) {
-            IssueDetails details = issueConnector.getIssue(id);
-            detailsList.add(details);
+            Set<IssueDetails> details = issueConnector.getIssue(id);
+            detailsList.addAll(details);
         }
 
         return detailsList;
+    }
+
+    @Override
+    public String getQuery() {
+        return issueConnector.getQuery();
     }
 
     @Override

@@ -15,6 +15,7 @@ import org.junit.rules.TestRule;
 
 import qa.tools.ikeeper.annotation.Jira;
 import qa.tools.ikeeper.client.CacheClient;
+import qa.tools.ikeeper.client.JiraClient;
 import qa.tools.ikeeper.client.connector.CacheConnector;
 
 public class CacheReadJiraTest {
@@ -26,7 +27,7 @@ public class CacheReadJiraTest {
 
     public CacheReadJiraTest() {
         issueKeeper = new IKeeperJUnitConnector(new CacheClient(
-        //new JiraClient("https://issues.jboss.org")
+        new JiraClient("https://issues.jboss.org")
         ));
     }
 
@@ -35,7 +36,7 @@ public class CacheReadJiraTest {
         try {
             PrintWriter out = new PrintWriter(CacheConnector.DEFAULT_CACHE_FILE_PATH);
             // all JIRAs are OPEN in the cache
-            out.println("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
+            out.println("key\\=JBPM-4608=JBPM-4608,jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "key\\=JBPM-4607=JBPM-4608,Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "key\\=JBPM-4198=JBPM-4608,Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

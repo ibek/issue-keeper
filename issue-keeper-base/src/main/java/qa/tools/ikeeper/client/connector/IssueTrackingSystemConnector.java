@@ -1,5 +1,7 @@
 package qa.tools.ikeeper.client.connector;
 
+import java.util.Set;
+
 import qa.tools.ikeeper.IssueDetails;
 
 /**
@@ -7,5 +9,8 @@ import qa.tools.ikeeper.IssueDetails;
  */
 public interface IssueTrackingSystemConnector {
 
-    IssueDetails getIssue(String id);
+    Set<IssueDetails> getIssue(String id);
+
+    String getQuery();
+
 }

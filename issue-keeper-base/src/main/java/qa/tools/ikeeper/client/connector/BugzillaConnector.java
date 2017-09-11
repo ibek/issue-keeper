@@ -1,74 +1,86 @@
 package qa.tools.ikeeper.client.connector;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import qa.tools.ikeeper.IssueDetails;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import qa.tools.ikeeper.IssueDetails;
-
-public class BugzillaConnector implements IssueTrackingSystemConnector {
+public class BugzillaConnector extends AbstractConnector {
 
     private static final Logger LOG = LoggerFactory.getLogger(BugzillaConnector.class);
 
-    private static Map<String, IssueDetails> cache = new HashMap<String, IssueDetails>();
-    private static boolean active = true;
-
     private String urlDomain;
+
+    private String query = "method=Bug.get&params=[{\"ids\":[\"${id}\"]}]";
 
     public BugzillaConnector(String urlDomain) {
         this.urlDomain = urlDomain;
     }
 
+    public BugzillaConnector(String urlDomain, String query) {
+        this(urlDomain);
+        if (query != null && !query.isEmpty()) {
+            this.query = query;
+        }
+    }
+
     @Override
-    public IssueDetails getIssue(String id) {
-        if (cache.containsKey(id)) {
-            return cache.get(id);
+    public Set<IssueDetails> getIssue(String id) {
+        String q = replacePlaceholders(query, id);
+        if (cache.containsKey(q)) {
+            return cache.get(q);
         }
-        IssueDetails details = new IssueDetails();
-        details.setId(id);
+        Set<IssueDetails> result = getByQuery(q);
 
-        boolean setUnknownIssue = false;
+        cache.put(q, result);
+        return result;
+    }
 
+    private Set<IssueDetails> getByQuery(String query) {
+        Set<IssueDetails> issues = new HashSet<IssueDetails>();
+        String response = get(urlDomain + "/jsonrpc.cgi?" + query);
         try {
-            String url = urlDomain + "/jsonrpc.cgi?method=Bug.get&params=[{\"ids\":[" + id + "]}]";
-            String bzjson = get(url);
+            JsonObject result = new JsonParser().parse(response).getAsJsonObject().getAsJsonObject("result");
+            Iterator<JsonElement> bugs = result.getAsJsonArray("bugs").iterator();
 
-            if (bzjson == null) {
-                setUnknownIssue = true;
-            } else {
-
-                JsonObject result = new JsonParser().parse(bzjson).getAsJsonObject().getAsJsonObject("result");
-                JsonObject bug = result.getAsJsonArray("bugs").get(0).getAsJsonObject();
-
-                details.setTitle(bug.get("summary").getAsString());
-                details.setTargetVersion(bug.get("target_release").getAsJsonArray().iterator().next().getAsString());
-                details.setProject("BZ@" + bug.get("product").getAsString());
-                String status = bug.get("status").getAsString();
-                details.setStatusName(status.toUpperCase());
+            while (bugs.hasNext()) {
+                issues.add(parseIssue(bugs.next().toString()));
             }
-        } catch (Exception ex) {
-            LOG.warn(ex.getClass().getName() + " " + ex.getMessage());
-            setUnknownIssue = true;
+        }catch (NullPointerException e){
+            throw new IllegalStateException("Wrong response.", e);
         }
 
-        if (setUnknownIssue) {
-            details.setStatusName("UNKNOWN");
-            details.setTitle("Exception in getIssue details for BZ " + id);
-        }
+        return issues;
+    }
 
-        cache.put(id, details);
+    private IssueDetails parseIssue(String response) {
+        IssueDetails details = new IssueDetails();
+
+        JsonObject bug = new JsonParser().parse(response).getAsJsonObject();
+        details.setId(bug.get("id").getAsString());
+        details.setTitle(bug.get("summary").getAsString());
+        details.setTargetVersion(bug.get("target_release").getAsJsonArray().iterator().next().getAsString());
+        details.setProject("BZ@" + bug.get("product").getAsString());
+        String status = bug.get("status").getAsString();
+        details.setStatusName(status.toUpperCase());
 
         return details;
+    }
+
+    @Override
+    public String getQuery() {
+        return query;
     }
 
     private String get(String url) {
@@ -79,6 +91,11 @@ public class BugzillaConnector implements IssueTrackingSystemConnector {
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+            if (con.getResponseCode() != 200) {
+                throw new RuntimeException("Failed to contact Bugzilla on URL:" + url + ", HTTP error code : " + con
+                        .getResponseCode());
+            }
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;

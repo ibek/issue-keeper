@@ -34,7 +34,7 @@ public class CacheOutdatedJiraTest {
         try {
             PrintWriter out = new PrintWriter(CacheConnector.DEFAULT_CACHE_FILE_PATH);
             // all JIRAs are OPEN in the old cache
-            out.println("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
+            out.println("key\\=JBPM-4608=JBPM-4608,jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "key\\=JBPM-4607=JBPM-4607,Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,OPEN\n" + "key\\=JBPM-4198=JBPM-4198,Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
