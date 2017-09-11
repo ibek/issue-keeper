@@ -30,6 +30,13 @@ public class BZVersionTest {
         Assertions.assertThat(executed).contains("runSameVersionVerifiedTest");
     }
 
+    @AfterClass
+    public static void resetTestVersion() {
+        //test version is static - shared among all tests
+        //needs to be reset
+        IKeeperConnector.testVersion = null;
+    }
+
     @BZ("1079380")
     @Test
     public void runSameVersionVerifiedTest() {
