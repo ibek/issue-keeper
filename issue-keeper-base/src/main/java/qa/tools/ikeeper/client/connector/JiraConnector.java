@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qa.tools.ikeeper.IssueDetails;
+import sun.misc.BASE64Encoder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +27,8 @@ public class JiraConnector extends AbstractConnector {
     private String urlDomain;
 
     private String query = "key=${id}";
+    private String username;
+    private String password;
 
     public JiraConnector(String urlDomain) {
         this.urlDomain = urlDomain;
@@ -59,7 +62,6 @@ public class JiraConnector extends AbstractConnector {
         } catch (UnsupportedEncodingException e) {
             LOG.warn("can't encode query", e);
         }
-
         try {
             Iterator<JsonElement> itelm = new JsonParser().parse(response).getAsJsonObject().get("issues").getAsJsonArray().getAsJsonArray().iterator();
             while (itelm.hasNext()) {
@@ -108,6 +110,12 @@ public class JiraConnector extends AbstractConnector {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
 
+            if(username != null && password != null) {
+                final String userPassword = username + ":" + password;
+                String basicAuth = "Basic " + new String(new BASE64Encoder().encode(userPassword.getBytes()));
+                conn.setRequestProperty("Authorization", basicAuth);
+            }
+
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed to contact Jira on URL:" + url + ", HTTP error code : " + conn
                         .getResponseCode());
@@ -142,6 +150,15 @@ public class JiraConnector extends AbstractConnector {
             }
         }
         return r;
+    }
+
+    public void setUsername(String username){
+        this.username = username;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
+
     }
 
     @Override

@@ -58,6 +58,11 @@ public class BugzillaClient implements ITrackerClient {
     }
 
     @Override
+    public void authenticate(String username, String password) {
+        throw new IllegalStateException("Authentication is provided in method params. See https://www.bugzilla.org/docs/4.4/en/html/api/Bugzilla/WebService.html#LOGGING_IN");
+    }
+
+    @Override
     public IssueTrackingSystemConnector getIssueConnector() {
         return issueConnector;
     }

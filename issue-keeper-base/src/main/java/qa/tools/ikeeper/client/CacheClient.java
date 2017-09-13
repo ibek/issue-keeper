@@ -92,6 +92,11 @@ public class CacheClient implements ITrackerClient {
     }
 
     @Override
+    public void authenticate(String username, String password) {
+        throw new IllegalStateException("Authentication is not suitable for cache client");
+    }
+
+    @Override
     public IssueTrackingSystemConnector getIssueConnector() {
         return issueConnector;
     }

@@ -13,7 +13,7 @@ import qa.tools.ikeeper.client.connector.JiraConnector;
 
 public class JiraClient implements ITrackerClient {
 
-    protected final IssueTrackingSystemConnector issueConnector;
+    protected final JiraConnector issueConnector;
 
     public JiraClient(String urlDomain) {
         issueConnector = new JiraConnector(urlDomain, null);
@@ -56,6 +56,12 @@ public class JiraClient implements ITrackerClient {
     @Override
     public String getQuery() {
         return issueConnector.getQuery();
+    }
+
+    @Override
+    public void authenticate(String username, String password) {
+        issueConnector.setUsername(username);
+        issueConnector.setPassword(password);
     }
 
     @Override

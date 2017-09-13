@@ -18,6 +18,8 @@ public interface ITrackerClient {
 
     public String getQuery();
 
+    public void authenticate(String username, String password);
+
     public IssueTrackingSystemConnector getIssueConnector();
 
 }
