@@ -1,23 +1,18 @@
 package qa.tools.ikeeper.test;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import qa.tools.ikeeper.IKeeperInterceptor;
 import qa.tools.ikeeper.action.DoNothing;
 import qa.tools.ikeeper.action.IAction;
 import qa.tools.ikeeper.client.CacheClient;
 import qa.tools.ikeeper.client.ITrackerClient;
+import qa.tools.ikeeper.interceptor.DefaultInterceptor;
+import qa.tools.ikeeper.interceptor.IKeeperInterceptor;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class IKeeperConnector {
 
@@ -32,12 +27,13 @@ public class IKeeperConnector {
 
     protected static Map<String, String> configurationProperties = new HashMap<String, String>();
     protected static Map<String, String> permanentEnvironmentProperties = new HashMap<String, String>();
-    protected static Map<String, List<String>> projectStates = new HashMap<String, List<String>>();
 
     protected static String testVersion;
     protected static List<String> versionsOrder = new ArrayList<String>();
 
     protected static IAction action = new DoNothing();
+
+    private static Map<String, List<String>> projectStates = new HashMap<String, List<String>>();
 
     static {
         readConfigurationProperties();
@@ -45,20 +41,29 @@ public class IKeeperConnector {
     }
 
     public IKeeperConnector(ITrackerClient... clients) {
-        this(null, clients);
+        this(new DefaultInterceptor(loadProjectStates(Arrays.asList(clients))), clients);
     }
 
-    public IKeeperConnector(String testVersion, ITrackerClient... clients) {
-        if (testVersion != null) {
-            IKeeperConnector.testVersion = testVersion;
-        }
+    public IKeeperConnector(IKeeperInterceptor interceptor, ITrackerClient... clients) {
         this.clients = clients;
         environmentProperties.putAll(permanentEnvironmentProperties);
         String ikeeperRun = configurationProperties.get("ikeeper.run");
         if (ikeeperRun == null) {
             ikeeperRun = "true";
         }
-        
+        this.interceptor = interceptor;
+        interceptor.setEnabled(Boolean.valueOf(ikeeperRun));
+
+    }
+
+    public IKeeperConnector(String testVersion, ITrackerClient... clients) {
+        this(new DefaultInterceptor(loadProjectStates(Arrays.asList(clients))), clients);
+        if (testVersion != null) {
+            IKeeperConnector.testVersion = testVersion;
+        }
+    }
+
+    private static Map<String, List<String>> loadProjectStates(List<ITrackerClient> clients) {
         // load default project states
         List<ITrackerClient> fclients = new ArrayList<ITrackerClient>();
         for (ITrackerClient client : clients) {
@@ -74,9 +79,8 @@ public class IKeeperConnector {
                 projectStates.put(client.getName() + "@DEFAULT", client.getDefaultActionStates());
             }
         }
-        
-        interceptor = new IKeeperInterceptor(projectStates);
-        interceptor.setEnabled(Boolean.valueOf(ikeeperRun));
+
+        return projectStates;
     }
 
     private static void readConfigurationProperties() {
@@ -120,15 +124,14 @@ public class IKeeperConnector {
                         versionsOrder.add(v);
                     }
                 }
-                
+
                 for (Object ko : confProps.keySet()) {
                     String key = (String) ko;
                     if (key.contains("@")) {
-                        List<String> states = Arrays.asList(((String)confProps.get(key)).toUpperCase().split(","));
+                        List<String> states = Arrays.asList(((String) confProps.get(key)).toUpperCase().split(","));
                         projectStates.put(key, states);
                     }
                 }
-
             } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
@@ -140,7 +143,6 @@ public class IKeeperConnector {
         if (ikeeperRun != null) {
             configurationProperties.put("ikeeper.run", ikeeperRun);
         }
-
     }
 
     private static void readEnvironmentProperties() {
@@ -155,7 +157,6 @@ public class IKeeperConnector {
                 for (Entry<Object, Object> e : envProps.entrySet()) {
                     permanentEnvironmentProperties.put((String) e.getKey(), (String) e.getValue());
                 }
-
             } catch (IOException e) {
                 LOG.error(e.getMessage());
             }
@@ -165,7 +166,7 @@ public class IKeeperConnector {
     /**
      * These properties will be used in evaluating the issue constraints such as
      * container, database, jdk, et cetera.
-     * 
+     *
      * @param name
      * @param value
      */
@@ -184,5 +185,4 @@ public class IKeeperConnector {
     public static List<String> getVersionsOrder() {
         return versionsOrder;
     }
-
 }

@@ -1,37 +1,24 @@
-package qa.tools.ikeeper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
+package qa.tools.ikeeper.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.action.IAction;
 import qa.tools.ikeeper.client.ITrackerClient;
 import qa.tools.ikeeper.test.IKeeperConnector;
 
-public class IKeeperInterceptor {
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
-    private static final Logger LOG = LoggerFactory.getLogger(IKeeperInterceptor.class);
+public class DefaultInterceptor extends AbstractIKeeperInterceptor {
 
-    private static final String constraintsPropFileName = "ikeeperConstraints.properties";
-
-    private static Map<String, String> issueConstraints = new HashMap<String, String>();
-
-    static {
-        loadIssueConstraints();
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultInterceptor.class);
 
     private Map<String, List<String>> projectStates;
-    private boolean enabled = true;
 
-    public IKeeperInterceptor(Map<String, List<String>> projectStates) {
+    public DefaultInterceptor(Map<String, List<String>> projectStates) {
         this.projectStates = projectStates;
     }
 
@@ -54,29 +41,6 @@ public class IKeeperInterceptor {
         }
     }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    private static void loadIssueConstraints() {
-        Properties envProps = new Properties();
-
-        InputStream inputStream = IKeeperConnector.class.getClassLoader().getResourceAsStream(constraintsPropFileName);
-
-        if (inputStream != null) {
-            try {
-                envProps.load(inputStream);
-
-                for (Entry<Object, Object> e : envProps.entrySet()) {
-                    issueConstraints.put((String) e.getKey(), (String) e.getValue());
-                }
-
-            } catch (IOException e) {
-                LOG.error(e.getMessage());
-            }
-        }
-    }
-
     private void intercept(String testName, IssueDetails details, Map<String, String> evaluationProperties, IAction action) {
 
         List<String> versionsOrder = IKeeperConnector.getVersionsOrder();
@@ -85,7 +49,7 @@ public class IKeeperInterceptor {
             int itestVersion = versionsOrder.indexOf(IKeeperConnector.getTestVersion());
             if (itestVersion < itargetVersion) {
                 // the issue is not fixed in the current testing version
-                action.perform(testName, details);
+                action.perform(testName, Arrays.asList(details));
                 return;
             }
         }
@@ -93,7 +57,7 @@ public class IKeeperInterceptor {
         if (evaluationProperties.isEmpty()) {
             List<String> istates = getIssueProjectStates(details);
             if (istates.contains(details.getStatusName())) {
-                action.perform(testName, details);
+                action.perform(testName, Arrays.asList(details));
             }
             return; // we do not need to check any issue constraints
         }
@@ -117,7 +81,7 @@ public class IKeeperInterceptor {
         if (cfail == null) {
             List<String> istates = getIssueProjectStates(details);
             if (istates.contains(details.getStatusName())) {
-                action.perform(testName, details);
+                action.perform(testName, Arrays.asList(details));
             }
             return;
         }
@@ -127,10 +91,10 @@ public class IKeeperInterceptor {
 
         List<String> istates = getIssueProjectStates(details);
         if (cfail && istates.contains(details.getStatusName())) {
-            action.perform(testName, details);
+            action.perform(testName, Arrays.asList(details));
         }
     }
-    
+
     private List<String> getIssueProjectStates(IssueDetails details) {
         List<String> istates = projectStates.get(details.getProject());
         if (istates == null) {
@@ -139,5 +103,4 @@ public class IKeeperInterceptor {
         }
         return istates;
     }
-
 }

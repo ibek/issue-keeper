@@ -11,17 +11,27 @@ import org.junit.runners.model.Statement;
 
 import qa.tools.ikeeper.action.Skip;
 import qa.tools.ikeeper.client.ITrackerClient;
+import qa.tools.ikeeper.interceptor.IKeeperInterceptor;
 
 public class IKeeperJUnitConnector extends IKeeperConnector implements TestRule {
 
-    public IKeeperJUnitConnector(ITrackerClient... clients) {
-        this(null, clients);
+    static {
+        // skip is the default action
+        action = new Skip();
     }
+
+    public IKeeperJUnitConnector(ITrackerClient... clients) {
+        super(clients);
+    }
+
+    public IKeeperJUnitConnector(IKeeperInterceptor interceptor, ITrackerClient... clients){
+        super(interceptor,clients);
+    }
+
 
     public IKeeperJUnitConnector(String testVersion, ITrackerClient... clients) {
         super(testVersion, clients);
 
-        action = new Skip(); // skip is the default action
     }
 
     @Override

@@ -1,13 +1,19 @@
 package qa.tools.ikeeper.action;
 
+import java.util.List;
+import java.util.Set;
+
 import qa.tools.ikeeper.IssueDetails;
 
 class ActionMessage {
 
-    public static String generate(String testName, IssueDetails details, String result) {
-        String description = details.getDescription();
-        String msg = testName + " - this test " + result + " due to:\n\t" + formatId(details.getId()) + " " + details.getTitle() + "\n\tstatus: " + details.getStatusName() + formatDescription(description);
-        return msg;
+    public static String generate(String testName, List<IssueDetails> details, String result) {
+        StringBuilder builder = new StringBuilder(testName + " - this test " + result + " due to:\n\t");
+        for(IssueDetails detail : details) {
+            String description = detail.getDescription();
+             builder.append(formatId(detail.getId()) + " " + detail.getTitle() + "\n\tstatus: " + detail.getStatusName() + formatDescription(description) + "\n");
+        }
+        return builder.toString();
     }
 
     private static String formatId(String id) {

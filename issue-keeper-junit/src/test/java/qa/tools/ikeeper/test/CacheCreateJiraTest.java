@@ -1,22 +1,21 @@
 package qa.tools.ikeeper.test;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import org.assertj.core.api.Assertions;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
-
 import qa.tools.ikeeper.annotation.Jira;
 import qa.tools.ikeeper.client.CacheClient;
 import qa.tools.ikeeper.client.JiraClient;
 import qa.tools.ikeeper.client.connector.CacheConnector;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class CacheCreateJiraTest {
 
@@ -38,12 +37,15 @@ public class CacheCreateJiraTest {
         try {
             String cacheData = new Scanner(new File(CacheConnector.DEFAULT_CACHE_FILE_PATH)).useDelimiter("\\Z").next();
             System.out.println(cacheData);
-            Assertions.assertThat(cacheData).contains("JBPM-4608=jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4607=Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED\n" + "JBPM-4198=Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
+            Assertions.assertThat(cacheData).contains("key\\=JBPM-4608=JBPM-4608,jbpm-services\\: definition service does not provide type information of the variables,JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED");
+            Assertions.assertThat(cacheData).contains("key\\=JBPM-4607=JBPM-4607,Allow to inject kieContainer into registrable items (e.g. work item handlers),JIRA@JBPM,jBPM 6.4.0.Beta1,RESOLVED");
+            Assertions.assertThat(cacheData).contains("key\\=JBPM-4198=JBPM-4198,Package gwt-console-rpc with OSGi metadata,JIRA@JBPM,null,OPEN");
         } catch (IOException e) {
             e.printStackTrace();
             Assert.fail();
+        } finally {
+            cache.delete();
         }
-        cache.delete();
     }
 
     @Jira("JBPM-4608")
@@ -71,5 +73,4 @@ public class CacheCreateJiraTest {
         executed.add("ignoreNewAndVerifiedIssuesTest");
         System.out.println("ignoreNewAndVerifiedIssuesTest");
     }
-
 }

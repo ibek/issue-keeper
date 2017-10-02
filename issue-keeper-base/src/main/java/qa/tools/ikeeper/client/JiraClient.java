@@ -4,6 +4,7 @@ import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import qa.tools.ikeeper.IssueDetails;
 import qa.tools.ikeeper.annotation.Jira;
@@ -12,11 +13,16 @@ import qa.tools.ikeeper.client.connector.JiraConnector;
 
 public class JiraClient implements ITrackerClient {
 
-    protected final IssueTrackingSystemConnector issueConnector;
+    protected final JiraConnector issueConnector;
 
     public JiraClient(String urlDomain) {
-        issueConnector = new JiraConnector(urlDomain);
+        issueConnector = new JiraConnector(urlDomain, null);
     }
+
+    public JiraClient(String urlDomain, String query) {
+        issueConnector = new JiraConnector(urlDomain, query);
+    }
+
     
     @Override
     public String getName() {
@@ -40,11 +46,22 @@ public class JiraClient implements ITrackerClient {
         String[] ids = jiraAnnotation.value();
         List<IssueDetails> detailsList = new ArrayList<IssueDetails>();
         for (String id : ids) {
-            IssueDetails details = issueConnector.getIssue(id);
-            detailsList.add(details);
+            Set<IssueDetails> details = issueConnector.getIssue(id);
+            detailsList.addAll(details);
         }
 
         return detailsList;
+    }
+
+    @Override
+    public String getQuery() {
+        return issueConnector.getQuery();
+    }
+
+    @Override
+    public void authenticate(String username, String password) {
+        issueConnector.setUsername(username);
+        issueConnector.setPassword(password);
     }
 
     @Override
