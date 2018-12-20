@@ -6,7 +6,6 @@ import com.google.gson.JsonParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qa.tools.ikeeper.IssueDetails;
-import sun.misc.BASE64Encoder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -112,7 +112,7 @@ public class JiraConnector extends AbstractConnector {
 
             if(username != null && password != null) {
                 final String userPassword = username + ":" + password;
-                String basicAuth = "Basic " + new String(new BASE64Encoder().encode(userPassword.getBytes()));
+                String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userPassword.getBytes()));
                 conn.setRequestProperty("Authorization", basicAuth);
             }
 
