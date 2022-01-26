@@ -63,6 +63,11 @@ public class BugzillaClient implements ITrackerClient {
     }
 
     @Override
+    public void authenticate(String personalAccessToken) {
+        throw new UnsupportedOperationException("personal access token not supported");
+    }
+
+    @Override
     public IssueTrackingSystemConnector getIssueConnector() {
         return issueConnector;
     }

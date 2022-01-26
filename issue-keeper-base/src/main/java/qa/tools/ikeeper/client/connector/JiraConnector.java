@@ -29,6 +29,7 @@ public class JiraConnector extends AbstractConnector {
     private String query = "key=${id}";
     private String username;
     private String password;
+    private String personalAccessToken;
 
     public JiraConnector(String urlDomain) {
         this.urlDomain = urlDomain;
@@ -114,6 +115,9 @@ public class JiraConnector extends AbstractConnector {
                 final String userPassword = username + ":" + password;
                 String basicAuth = "Basic " + new String(Base64.getEncoder().encode(userPassword.getBytes()));
                 conn.setRequestProperty("Authorization", basicAuth);
+            } else if(personalAccessToken != null) {
+                String bearerAuth = "Bearer " + personalAccessToken;
+                conn.setRequestProperty("Authorization", bearerAuth);
             }
 
             if (conn.getResponseCode() != 200) {
@@ -159,6 +163,10 @@ public class JiraConnector extends AbstractConnector {
     public void setPassword(String password){
         this.password = password;
 
+    }
+
+    public void setPersonalAccessToken(String personalAccessToken) {
+        this.personalAccessToken = personalAccessToken;
     }
 
     @Override
