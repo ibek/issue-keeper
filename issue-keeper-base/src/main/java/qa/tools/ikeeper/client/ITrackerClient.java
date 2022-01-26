@@ -20,6 +20,8 @@ public interface ITrackerClient {
 
     public void authenticate(String username, String password);
 
+    public void authenticate(String personalAccessToken);
+
     public IssueTrackingSystemConnector getIssueConnector();
 
 }

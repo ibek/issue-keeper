@@ -65,6 +65,11 @@ public class JiraClient implements ITrackerClient {
     }
 
     @Override
+    public void authenticate(String personalAccessToken) {
+        issueConnector.setPersonalAccessToken(personalAccessToken);
+    }
+
+    @Override
     public IssueTrackingSystemConnector getIssueConnector() {
         return issueConnector;
     }
