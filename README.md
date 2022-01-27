@@ -50,20 +50,21 @@ public void runMultipleVerifiedIssuesTest() {
 ### Optional Configuration
 
 ikeeperConfiguration.properties:
-  - Change of action
-   - Skip - reported issue causes skipping the test
-   - Fail - reported issue causes fail of the test
-   - DoNothing - all the tests run, no matter the issues
-   - Custom - you are free to decide whether to proceed testing or not
-   - Example: action=org.jboss.qa.ikeeper.action.Fail
-  - Set current testing version
+
+1. Change of action
+   * Skip - reported issue causes skipping the test
+   * Fail - reported issue causes fail of the test
+   * DoNothing - all the tests run, no matter the issues
+   * Custom - you are free to decide whether to proceed testing or not
+   * Example: action=org.jboss.qa.ikeeper.action.Fail
+2. Set current testing version
    - testVersion=6.0.2
-  - Set versions order
+3. Set versions order
    - versions=6.0.1,6.0.2,6.0.3,6.1.0
-  - Disable Issue Keeper
+4. Disable Issue Keeper
    - ikeeper.run=false
    - can be also configured as a system property -Dikeeper.run=false
-  - Configure action states
+5. Configure action states
    - JIRA@DEFAULT=NEW,OPEN,ASSIGNED,CODING IN PROGRESS,PULL REQUEST SENT,REOPENED
    - BZ@DEFAULT=NEW,ASSIGNED,POST,MODIFIED
    - JIRA@RHBPMS=NEW,OPEN,ASSIGNED,CODING IN PROGRESS,PULL REQUEST SENT,REOPENED,RESOLVED
